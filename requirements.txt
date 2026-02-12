@@ -1,5 +1,4 @@
 flet
-openpyxl33
 gtts
 tempfile
 sqlite3
