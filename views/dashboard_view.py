@@ -2,7 +2,8 @@ import flet as ft
 from database import get_user, reset_user_progress_for_level, get_difficult_words
 
 def DashboardView(page: ft.Page):
-    username = page.session.get("username")
+    from session_utils import get_session
+    username = get_session(page, "username")
     user = get_user(username)
     
     if not user:
@@ -28,7 +29,8 @@ def DashboardView(page: ft.Page):
 
         def go_continue(e):
             # Just set the level and navigate - don't reset anything
-            page.session.set("current_level", level)
+            from session_utils import set_session
+            set_session(page, "current_level", level)
             page.close(dlg)
             page.go("/learn")
 

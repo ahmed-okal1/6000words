@@ -41,8 +41,9 @@ def LandingView(page: ft.Page):
                 return
 
             log("Setting session session variables...")
-            page.session.set("user_id", user['id'])
-            page.session.set("username", user['username'])
+            from session_utils import set_session
+            set_session(page, "user_id", user['id'])
+            set_session(page, "username", user['username'])
             
             log("Saving persistence file...")
             set_last_user(user['username'])

@@ -5,10 +5,11 @@ from gtts import gTTS
 import tempfile
 
 def LearningView(page: ft.Page):
-    username = page.session.get("username")
+    from session_utils import get_session
+    username = get_session(page, "username")
     user = get_user(username)
     
-    current_level = page.session.get("current_level") or user['current_level']
+    current_level = get_session(page, "current_level") or user['current_level']
     
     # Load words
     all_words = get_words_by_level(current_level)

@@ -5,7 +5,8 @@ from gtts import gTTS
 import tempfile
 
 def DifficultWordsView(page: ft.Page):
-    username = page.session.get("username")
+    from session_utils import get_session
+    username = get_session(page, "username")
     
     # Load difficult words
     difficult_words = get_difficult_words(username, min_errors=3)
