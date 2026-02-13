@@ -2,11 +2,25 @@ import flet as ft
 from database import get_user, reset_user_progress_for_level, get_difficult_words
 
 def DashboardView(page: ft.Page):
+    import os
+    import datetime
+    log_file = os.path.join(os.path.expanduser("~"), "english_mastery_debug.log")
+    def log(msg):
+        try:
+            timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+            with open(log_file, "a", encoding="utf-8") as f:
+                f.write(f"[{timestamp}] [DASHBOARD] {msg}\n")
+        except: pass
+
     from session_utils import get_session
     username = get_session(page, "username")
+    log(f"Retrieved username: {username}")
+    
     user = get_user(username)
+    log(f"Database user found: {user is not None}")
     
     if not user:
+        log("No user found, REDIRECTING to /")
         page.go("/")
         return ft.View(route="/dashboard-empty")
 
@@ -36,7 +50,8 @@ def DashboardView(page: ft.Page):
 
         def go_start_over(e):
             reset_user_progress_for_level(username, level)
-            page.session.set("current_level", level)
+            from session_utils import set_session
+            set_session(page, "current_level", level)
             page.close(dlg)
             page.go("/learn")
 
