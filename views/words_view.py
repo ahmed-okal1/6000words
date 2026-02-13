@@ -177,7 +177,7 @@ def WordsView(page: ft.Page):
     load_words(is_initial=True)
 
     return ft.View(
-        "/words",
+        route="/words",
         controls=[
             ft.Container(
                 content=ft.Column(

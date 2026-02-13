@@ -7,7 +7,7 @@ def DashboardView(page: ft.Page):
     
     if not user:
         page.go("/")
-        return ft.View()
+        return ft.View(route="/dashboard-empty")
 
     def start_level(e, level):
         # Reset progress for this level to start from beginning
@@ -162,7 +162,7 @@ def DashboardView(page: ft.Page):
     page.overlay.append(file_picker)
 
     return ft.View(
-        "/dashboard",
+        route="/dashboard",
         controls=[
             ft.Container(
                 content=ft.Column(
@@ -183,7 +183,7 @@ def DashboardView(page: ft.Page):
                                             ft.PopupMenuItem(text="Manage Words", icon=ft.Icons.LIST_ALT, on_click=lambda e: page.go("/words")),
                                         ]
                                     ),
-                                    ft.IconButton(ft.Icons.LOGOUT, icon_color="redAccent", on_click=lambda e: [page.client_storage.remove("last_username"), page.go("/")]),
+                                    ft.IconButton(ft.Icons.LOGOUT, icon_color="redAccent", on_click=lambda e: [(__import__('database').clear_last_user()), page.go("/")]),
                                 ])
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN

@@ -14,7 +14,7 @@ def LearningView(page: ft.Page):
     all_words = get_words_by_level(current_level)
     
     if not all_words:
-        return ft.View("/learn", controls=[ft.Text("No words found for this level.")])
+        return ft.View(route="/learn", controls=[ft.Text("No words found for this level.")])
 
     # Get per-level progress
     saved_index = get_level_progress(username, current_level)
@@ -154,7 +154,7 @@ def LearningView(page: ft.Page):
     page.on_keyboard_event = on_keyboard
 
     return ft.View(
-        "/learn",
+        route="/learn",
         controls=[
             ft.Container(
                 content=ft.Column(

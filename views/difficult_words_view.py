@@ -12,7 +12,7 @@ def DifficultWordsView(page: ft.Page):
     
     if not difficult_words:
         return ft.View(
-            "/difficult",
+            route="/difficult",
             controls=[
                 ft.Container(
                     content=ft.Column(
@@ -182,7 +182,7 @@ def DifficultWordsView(page: ft.Page):
     page.on_keyboard_event = on_keyboard
 
     return ft.View(
-        "/difficult",
+        route="/difficult",
         controls=[
             ft.Container(
                 content=ft.Column(
@@ -230,8 +230,8 @@ def DifficultWordsView(page: ft.Page):
                 padding=40,
                 expand=True,
                 gradient=ft.LinearGradient(
-                    begin=ft.alignment.top_center,
-                    end=ft.alignment.bottom_center,
+                    begin=ft.Alignment(0, -1),
+                    end=ft.Alignment(0, 1),
                     colors=[ft.Colors.BLUE_GREY_900, ft.Colors.BLACK],
                 )
             )

@@ -15,7 +15,8 @@ def LandingView(page: ft.Page):
         
         page.session.set("user_id", user['id'])
         page.session.set("username", user['username'])
-        page.client_storage.set("last_username", user['username'])
+        from database import set_last_user
+        set_last_user(user['username'])
         page.go("/dashboard")
 
     username_field = ft.TextField(
@@ -29,7 +30,7 @@ def LandingView(page: ft.Page):
     )
 
     return ft.View(
-        "/",
+        route="/",
         controls=[
             ft.Container(
                 content=ft.Column(
@@ -65,7 +66,6 @@ def LandingView(page: ft.Page):
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
                 # alignment=ft.alignment.center,
-                # Safe replacement for frozen apps
                 # Safe replacement for frozen apps
                 alignment=ft.Alignment(0, 0),
                 expand=True,
