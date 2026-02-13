@@ -4,83 +4,75 @@ import sys
 import traceback
 
 def main(page: ft.Page):
-    page.title = "English Mastery"
+    # --- STEP 1: RESILIENT UI SETUP ---
+    page.title = "English Mastery - Startup"
     page.theme_mode = ft.ThemeMode.DARK
     page.window_width = 400
     page.window_height = 800
-    page.padding = 0
-    
-    # 1. Immediate Loading View
-    loading_view = ft.View(
-        "/loading",
-        controls=[
-            ft.Container(
-                content=ft.Column([
-                    ft.ProgressRing(),
-                    ft.Text("Starting English Mastery...", color="white")
-                ], horizontal_alignment="center", spacing=20),
-                alignment=ft.alignment.center,
-                expand=True
-            )
-        ]
-    )
-    page.views.append(loading_view)
-    page.update()
+    page.padding = 20
+    page.scroll = ft.ScrollMode.ALWAYS
 
-    # 2. Setup Logging to File (to see errors if screen stays blank)
-    from database import get_db_path
-    log_path = get_db_path().replace(".db", "_log.txt")
+    # Use a simple list to show progress
+    status_list = ft.Column(spacing=10)
+    page.add(
+        ft.Text("Diagnostic Startup", size=24, weight="bold"),
+        status_list
+    )
     
-    def log(msg):
+    def report(msg, color="white"):
+        status_list.controls.append(ft.Text(msg, color=color, size=12))
+        page.update()
+
+    report(f"Python Version: {sys.version}")
+    report(f"Executable: {sys.executable}")
+    report(f"CWD: {os.getcwd()}")
+
+    # --- STEP 2: LOGGING SETUP ---
+    log_file = os.path.join(os.path.expanduser("~"), "english_mastery_debug.log")
+    def log_to_file(msg):
         try:
-            with open(log_path, "a", encoding="utf-8") as f:
+            with open(log_file, "a", encoding="utf-8") as f:
                 f.write(f"{msg}\n")
         except: pass
 
-    log("--- App Startup ---")
+    log_to_file("\n--- NEW STARTUP ---")
 
-    def show_error(message):
-        log(f"ERROR: {message}")
-        page.views.clear()
-        page.views.append(ft.View(
-            "/error",
-            controls=[
-                ft.Container(
-                    content=ft.Column([
-                        ft.Icon(ft.Icons.ERROR_OUTLINE, color="red", size=50),
-                        ft.Text("Startup Error", size=24, weight="bold", color="red"),
-                        ft.Text(str(message), color="white", selectable=True, text_align="center", size=12),
-                        ft.ElevatedButton("Retry", on_click=lambda _: page.go("/"))
-                    ], horizontal_alignment="center", spacing=20),
-                    alignment=ft.alignment.center,
-                    padding=20,
-                    expand=True
-                )
-            ]
-        ))
-        page.update()
-
-    # 3. Deferred Imports & Init
+    # --- STEP 3: DATABASE & VIEWS ---
     try:
-        log("Initializng Database...")
-        from database import init_db
-        init_db()
+        report("Loading database logic...")
+        import database
+        db_path = database.get_db_path()
+        report(f"Target DB Path: {db_path}", "blue")
         
-        log("Seeding Data...")
+        report("Initializing database...")
+        database.init_db()
+        
+        report("Seeding data...")
         from seed_data import seed_data
         seed_data()
         
-        log("Loading Views...")
+        report("Loading views...")
         from views.landing_view import LandingView
         from views.dashboard_view import DashboardView
         from views.learning_view import LearningView
         from views.words_view import WordsView
         from views.difficult_words_view import DifficultWordsView
-        log("Ready.")
+        report("Logic loaded successfully.", "green")
+
+        # Clear diagnostic UI and start main app
+        ft.time.sleep(1) # Let user see the green "Success" for a bit
+        page.controls.clear()
+        page.padding = 0
+        page.scroll = None
+        page.title = "English Mastery"
+        
     except Exception as e:
-        show_error(f"{e}\n{traceback.format_exc()}")
+        err = f"CRITICAL ERROR: {str(e)}\n\n{traceback.format_exc()}"
+        report(err, "red")
+        log_to_file(err)
         return
 
+    # --- STEP 4: ROUTING ---
     def route_change(route):
         try:
             page.views.clear()
@@ -96,11 +88,12 @@ def main(page: ft.Page):
                 page.views.append(DifficultWordsView(page))
             page.update()
         except Exception as e:
-            show_error(f"Route Error: {e}")
+            report(f"Routing Error: {e}", "red")
 
     page.on_route_change = route_change
     page.on_view_pop = lambda _: [page.views.pop(), page.go(page.views[-1].route)]
     
+    # Start Navigation
     try:
         last_username = page.client_storage.get("last_username")
         if last_username:
@@ -108,8 +101,7 @@ def main(page: ft.Page):
             page.go("/dashboard")
         else:
             page.go("/")
-    except Exception as e:
-        log(f"Storage Error: {e}")
+    except:
         page.go("/")
 
 if __name__ == "__main__":
