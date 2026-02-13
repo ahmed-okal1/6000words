@@ -59,8 +59,8 @@ def main(page: ft.Page):
         from views.difficult_words_view import DifficultWordsView
         report("Logic loaded successfully.", "green")
 
-        # Clear diagnostic UI and start main app
-        ft.time.sleep(1) # Let user see the green "Success" for a bit
+        import time
+        time.sleep(1) # Let user see the green "Success" for a bit
         page.controls.clear()
         page.padding = 0
         page.scroll = None
