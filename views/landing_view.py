@@ -64,11 +64,14 @@ def LandingView(page: ft.Page):
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
-                alignment=ft.alignment.center,
+                # alignment=ft.alignment.center,
+                # Safe replacement for frozen apps
+                # Safe replacement for frozen apps
+                alignment=ft.Alignment(0, 0),
                 expand=True,
                 gradient=ft.LinearGradient(
-                    begin=ft.alignment.top_left,
-                    end=ft.alignment.bottom_right,
+                    begin=ft.Alignment(-1, -1),
+                    end=ft.Alignment(1, 1),
                     colors=[ft.Colors.INDIGO_900, ft.Colors.PURPLE_900],
                 )
             )

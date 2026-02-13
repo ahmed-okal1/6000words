@@ -34,8 +34,8 @@ def DifficultWordsView(page: ft.Page):
                     padding=40,
                     expand=True,
                     gradient=ft.LinearGradient(
-                        begin=ft.alignment.top_center,
-                        end=ft.alignment.bottom_center,
+                    begin=ft.Alignment(0, -1),
+                    end=ft.Alignment(0, 1),
                         colors=[ft.Colors.BLUE_GREY_900, ft.Colors.BLACK],
                     )
                 )
