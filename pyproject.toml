@@ -1,0 +1,21 @@
+[project]
+name = "englishmastery"
+version = "1.0.0"
+description = "English Mastery - Learn English vocabulary"
+dependencies = [
+    "flet==0.28.3",
+    "flet-audio==0.1.0",
+    "gtts",
+    "openpyxl",
+]
+
+[tool.flet]
+org = "com.user"
+product = "English Mastery"
+module = "main"
+
+[tool.flet.app]
+exclude = ["build", ".github", ".git", ".venv", "__pycache__", "temp_pkg"]
+
+[tool.flet.android.permission]
+"android.permission.INTERNET" = true

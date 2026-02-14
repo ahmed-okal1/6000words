@@ -6,7 +6,11 @@ import datetime
 import time
 
 # Explicit imports to help Flet build process discovery
-from flet import Audio, FilePicker, View, Page
+from flet import FilePicker, View, Page
+try:
+    from flet import Audio
+except ImportError:
+    Audio = None
 
 # Import views at the top level so static analyzer sees them
 from views.landing_view import LandingView
@@ -24,7 +28,11 @@ def main(page: Page):
     log_file = os.path.join(os.path.expanduser("~"), "english_mastery_debug.log")
     
     # Pre-add dummy controls to overlay to ensure plugins are included in the build
-    page.overlay.append(Audio(src="dummy.mp3"))
+    try:
+        if Audio is not None:
+            page.overlay.append(Audio(src="dummy.mp3"))
+    except Exception:
+        pass  # Audio control not available on this platform
     page.overlay.append(FilePicker())
 
     def log(msg):
